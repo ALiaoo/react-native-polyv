@@ -32,6 +32,7 @@ public class ReactPolyvModule extends ReactContextBaseJavaModule {
 
 	private ReactApplicationContext reactContext;
 	private Map<String, PolyvDownloader> downloaders = new HashMap<>();
+	private int level = 1;
 
 	public ReactPolyvModule(ReactApplicationContext reactContext) {
 		super(reactContext);
@@ -132,6 +133,7 @@ public class ReactPolyvModule extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void download(String vid, int level) {
+		this.level = level;
 		PolyvDownloader downloader = PolyvDownloaderManager.getPolyvDownloader(vid, level);
 
 		downloader.setPolyvDownloadProressListener(new DownloadListener(vid, reactContext));
@@ -160,8 +162,7 @@ public class ReactPolyvModule extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void delete(String vid) {
-		PolyvDownloader downloader = downloaders.get(vid);
-
+		PolyvDownloader downloader = PolyvDownloaderManager.clearPolyvDownload(vid, this.level);
 		if (downloader != null) {
 			downloader.deleteVideo();
 		} else {
